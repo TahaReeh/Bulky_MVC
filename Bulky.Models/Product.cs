@@ -15,6 +15,9 @@ namespace Bulky.Models
         public string ISBN { get; set; }
         [Required]
         public string Author { get; set; }
+        //[Required]
+        //[Range(1, 1000)]
+        //public double ListPrice { get; set; }
         [Required]
         [Display(Name = "Price for 1-50")]
         [Range(1,1000)]
