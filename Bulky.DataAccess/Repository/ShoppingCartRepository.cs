@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace Bulky.DataAccess.Repository
 {
-    public class CompanyRepository : Repository<Company>, ICompanyRepository
+    public class ShoppingCartRepository : Repository<ShoppingCart>, IShoppingCartRepository
     {
 
         private readonly ApplicationDbContext db;
-        public CompanyRepository(ApplicationDbContext _db) : base(_db)
+        public ShoppingCartRepository(ApplicationDbContext _db) : base(_db)
         {
             db = _db;
         }
-        public void Update(Company obj)
+        public void Update(ShoppingCart obj)
         {
-            db.Companies.Update(obj);
+            db.ShoppingCarts.Update(obj);
         }
 
     }

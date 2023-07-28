@@ -25,15 +25,14 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            Company company;
+
             if (id == null || id == 0)
             {
-                company = new Company();
-                return View(company);
+                return View(new Company());
             }
             else
             {
-                company = _unitOfWork.Company.Get(u => u.Id == id);
+                Company company = _unitOfWork.Company.Get(u => u.Id == id);
                 return View(company);
             }
         }
