@@ -25,7 +25,6 @@ namespace BulkyWeb.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
-
             if (id == null || id == 0)
             {
                 return View(new Company());
