@@ -13,6 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Add user secrets
+builder.Configuration.AddUserSecrets<Program>();
+
+// Retrieve Facebook login options from UserSecrets
+var facebookAppId = builder.Configuration["Authentication:Facebook:AppId"] ?? "";
+var facebookAppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? "";
+
+// Retrieve Microsoft login options from UserSecrets
+var microsoftClientId = builder.Configuration["Authentication:Microsoft:ClientId"] ?? "";
+var microsoftClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"] ?? "";
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -20,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 //Identity config
-builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";
@@ -28,14 +40,16 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 //facebook login
-builder.Services.AddAuthentication().AddFacebook(options => {
-    options.AppId = "2462079877207526";
-    options.AppSecret = "8c2cb67b2ba49cc29d65c6e1b113988d";
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = facebookAppId;
+    options.AppSecret = facebookAppSecret;
 });
 //microsoft login
-builder.Services.AddAuthentication().AddMicrosoftAccount(options => {
-    options.ClientId = "f5af1f37-c52b-412c-82ee-9c52fc54cfe3";
-    options.ClientSecret = "ij98Q~SZpa_fiyYTVhpOhM_QHarJ5wCvseB~6cLd";
+builder.Services.AddAuthentication().AddMicrosoftAccount(options =>
+{
+    options.ClientId = microsoftClientId;
+    options.ClientSecret = microsoftClientSecret;
 });
 
 //session config
@@ -79,7 +93,7 @@ app.Run();
 
 void SeedDatabase()
 {
-using (var scope = app.Services.CreateScope())
+    using (var scope = app.Services.CreateScope())
     {
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         dbInitializer.Initialize();
